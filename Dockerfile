@@ -20,7 +20,7 @@ RUN pip3 install --upgrade setuptools
 # Chameleon Ubuntu22.04-CUDA version: 12.6
 # RUN pip3 install torch==1.8.1+cuXXX -f https://download.pytorch.org/whl/torch_stable.html
 RUN pip3 install torch torchvision torchaudio
-RUN pip3 install transformers==4.21.1 scikit-learn==1.1.2 tree-sitter==0.20.0
+RUN pip3 install transformers==4.21.1 scikit-learn==1.1.2 tree-sitter==0.20.0 numpy<2
 
 ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
