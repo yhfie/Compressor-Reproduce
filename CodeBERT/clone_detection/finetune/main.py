@@ -158,8 +158,14 @@ def evaluate(args, model, tokenizer, eval_when_training=False):
     labels = np.concatenate(labels, 0)
     if "unlabel_train" in args.eval_data_file:
         np.save("../../../data/clone_detection/preds_unlabel_train", logits)
-    logits = F.softmax(torch.FloatTensor(logits))
-    y_preds = logits[:, 1] > 0.5
+    
+    # logits = F.softmax(torch.FloatTensor(logits))
+    # y_preds = logits[:, 1] > 0.5
+
+    logits_tensor = torch.FloatTensor(logits)
+    softmax_logits = F.softmax(logits_tensor, dim=1)
+    y_preds = (softmax_logits[:, 1] > 0.5).cpu().numpy()
+
     recall = recall_score(labels, y_preds)
     precision = precision_score(labels, y_preds)
     f1 = f1_score(labels, y_preds)
