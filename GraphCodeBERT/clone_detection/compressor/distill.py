@@ -9,6 +9,7 @@ import argparse
 import numpy as np
 import multiprocessing
 import torch.nn.functional as F
+import csv
 
 from tqdm import tqdm
 from tokenizers import Tokenizer
@@ -257,7 +258,7 @@ class TextDataset(Dataset):
     def __getitem__(self, item):
         #calculate graph-guided masked function
         attn_mask_1= np.zeros((self.args.code_length+self.args.data_flow_length,
-                        self.args.code_length+self.args.data_flow_length),dtype=np.bool)
+                        self.args.code_length+self.args.data_flow_length),dtype=bool)
         #calculate begin index of node and max length of input
         node_index=sum([i>1 for i in self.examples[item].position_idx_1])
         max_length=sum([i!=1 for i in self.examples[item].position_idx_1])
@@ -280,7 +281,7 @@ class TextDataset(Dataset):
                     
         #calculate graph-guided masked function
         attn_mask_2= np.zeros((self.args.code_length+self.args.data_flow_length,
-                        self.args.code_length+self.args.data_flow_length),dtype=np.bool)
+                        self.args.code_length+self.args.data_flow_length),dtype=bool)
         #calculate begin index of node and max length of input
         node_index=sum([i>1 for i in self.examples[item].position_idx_2])
         max_length=sum([i!=1 for i in self.examples[item].position_idx_2])
@@ -606,6 +607,13 @@ def main():
                         help="random seed for initialization")
     parser.add_argument("--epochs", type=int, default=1,
                         help="training epochs")
+    
+    parser.add_argument("--result_csv_path", default="evaluation_results.csv", type=str,
+                        help="Path to the CSV file to save evaluation results.")
+    parser.add_argument("--model_name_for_csv", default="unknown_model", type=str,
+                        help="Name of the model/experiment for CSV logging (e.g., 'graphcodebert').")
+    parser.add_argument("--task", default="CloneDetection", type=str,
+                        help="Task Name")
 
     args = parser.parse_args()
 
@@ -662,6 +670,25 @@ def main():
         model.load_state_dict(torch.load(output_dir))
         model.to(args.device)
         results = test(args, model, tokenizer,best_threshold=0.5)
+
+        # --- CSV Saving Logic ---
+        csv_file_exists = os.path.exists(args.result_csv_path)
+        with open(args.result_csv_path, 'a', newline='') as csvfile: # 'a' for append mode
+            fieldnames = ['name', 'compression_size_MB', 'acc', 'precision', 'recall', 'f1']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+            if not csv_file_exists:
+                writer.writeheader() # Write header only if file didn't exist
+
+            writer.writerow({
+                'name': args.model_name_for_csv,
+                'compression_size_MB': args.size, # args.size is already a string like "3", "25", "50"
+                'acc': round(results["test_acc"], 4),
+                'precision': round(results["test_precision"], 4),
+                'recall': round(results["test_recall"], 4),
+                'f1': round(results["test_f1"], 4)
+            })
+        logger.info(f"Evaluation results saved to {args.result_csv_path}")
 
     return results
 
