@@ -5,6 +5,7 @@ import argparse
 import warnings
 import numpy as np
 import torch.nn.functional as F
+import csv
 
 from tqdm import tqdm
 from models import biLSTM, mse_loss
@@ -146,6 +147,13 @@ def main():
                         help="random seed for initialization")
     parser.add_argument("--epochs", type=int, default=42,
                         help="random seed for initialization")
+    
+    parser.add_argument("--result_csv_path", default="evaluation_results.csv", type=str,
+                        help="Path to the CSV file to save evaluation results.")
+    parser.add_argument("--model_name_for_csv", default="unknown_model", type=str,
+                        help="Name of the model/experiment for CSV logging (e.g., 'graphcodebert').")
+    parser.add_argument("--task", default="CloneDetection", type=str,
+                        help="Task Name")
 
     args = parser.parse_args()
 
@@ -193,6 +201,25 @@ def main():
         eval_res = evaluate(model, eval_dataloader)
         logger.info("Acc: {0}, Precision: {1}, Recall: {2}, F1: {3}".format(
             eval_res["eval_acc"], eval_res["eval_precision"], eval_res["eval_recall"], eval_res["eval_f1"]))
+        
+        # --- CSV Saving Logic ---
+        csv_file_exists = os.path.exists(args.result_csv_path)
+        with open(args.result_csv_path, 'a', newline='') as csvfile: # 'a' for append mode
+            fieldnames = ['name', 'compression_size_MB', 'acc', 'precision', 'recall', 'f1']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+            if not csv_file_exists:
+                writer.writeheader() # Write header only if file didn't exist
+
+            writer.writerow({
+                'name': args.model_name_for_csv,
+                'compression_size_MB': args.size, # args.size is already a string like "3", "25", "50"
+                'acc': round(eval_res["eval_acc"], 4),
+                'precision': round(eval_res["eval_precision"], 4),
+                'recall': round(eval_res["eval_recall"], 4),
+                'f1': round(eval_res["eval_f1"], 4)
+            })
+        logger.info(f"Evaluation results saved to {args.result_csv_path}")
 
 
 if __name__ == "__main__":
