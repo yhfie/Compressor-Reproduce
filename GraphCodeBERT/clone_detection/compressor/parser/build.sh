@@ -16,4 +16,10 @@ git clone https://github.com/tree-sitter/tree-sitter-c
 (cd tree-sitter-c-sharp && git checkout 7a47daeaf0d410dd1a91c97b274bb7276dd96605)
 (cd tree-sitter-c && git checkout ad095896dd223f1c22b85ac5ec84ab11fb732b07)
 
+export CC=gcc
+export CXX=g++
+export CFLAGS="-fPIC"
+export CXXFLAGS="-fPIC"
+export LDFLAGS="-shared"
+
 python3 build.py
