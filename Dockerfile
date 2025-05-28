@@ -12,15 +12,6 @@ RUN apt-get -y update
 RUN apt -y install python3.9 python3-pip python3.9-distutils python3.9-dev
 RUN apt update && apt install -y build-essential g++ cmake
 
-COPY gcc-wrapper.sh /usr/local/bin/gcc-wrapper.sh
-COPY g++-wrapper.sh /usr/local/bin/g++-wrapper.sh
-
-RUN chmod +x /usr/local/bin/gcc-wrapper.sh
-RUN chmod +x /usr/local/bin/g++-wrapper.sh
-
-ENV CC=/usr/local/bin/gcc-wrapper.sh
-ENV CXX=/usr/local/bin/g++-wrapper.sh
-
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 1
 
 WORKDIR /root
