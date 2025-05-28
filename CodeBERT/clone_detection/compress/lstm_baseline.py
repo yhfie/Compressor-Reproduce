@@ -152,8 +152,6 @@ def main():
                         help="Path to the CSV file to save evaluation results.")
     parser.add_argument("--model_name_for_csv", default="unknown_model", type=str,
                         help="Name of the model/experiment for CSV logging (e.g., 'graphcodebert').")
-    parser.add_argument("--task", default="CloneDetection", type=str,
-                        help="Task Name")
 
     args = parser.parse_args()
 
@@ -205,7 +203,7 @@ def main():
         # --- CSV Saving Logic ---
         csv_file_exists = os.path.exists(args.result_csv_path)
         with open(args.result_csv_path, 'a', newline='') as csvfile: # 'a' for append mode
-            fieldnames = ['name', 'compression_size_MB', 'acc', 'precision', 'recall', 'f1']
+            fieldnames = ['name', 'task', 'compression_size_MB', 'acc', 'precision', 'recall', 'f1']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
             if not csv_file_exists:
@@ -213,7 +211,8 @@ def main():
 
             writer.writerow({
                 'name': args.model_name_for_csv,
-                'compression_size_MB': args.size, # args.size is already a string like "3", "25", "50"
+                'task': 'clone_detection',
+                'compression_size_MB': "", # args.size is already a string like "3", "25", "50"
                 'acc': round(eval_res["eval_acc"], 4),
                 'precision': round(eval_res["eval_precision"], 4),
                 'recall': round(eval_res["eval_recall"], 4),
