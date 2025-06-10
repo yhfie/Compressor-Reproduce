@@ -3,7 +3,7 @@ import csv
 import argparse
 
 def compile_results(input_dir, output_file):
-      fieldnames = ['name', 'compression_size_MB', 'acc', 'precision', 'recall', 'f1']
+      fieldnames = ['name', 'task', 'compression_size_MB', 'acc', 'precision', 'recall', 'f1']
       all_rows = []
       header_written = False
 
