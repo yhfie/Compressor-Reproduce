@@ -222,12 +222,7 @@ def main():
 
             writer.writerow({
                 'name': args.model_name_for_csv,
-<<<<<<< HEAD
                 'compression_size_MB': f"{args.size} MB",
-=======
-                'task': 'clone_detection',
-                'compression_size_MB': args.size, # args.size is already a string like "3", "25", "50"
->>>>>>> 6b6a14de84d009779cb3c267a2275eb665f06f61
                 'acc': round(eval_res["eval_acc"], 4),
                 'precision': round(eval_res["eval_precision"], 4),
                 'recall': round(eval_res["eval_recall"], 4),
