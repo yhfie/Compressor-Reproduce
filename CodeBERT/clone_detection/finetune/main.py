@@ -247,6 +247,8 @@ def main():
                         help="random seed for initialization")
     parser.add_argument("--epoch", type=int, default=42,
                         help="random seed for initialization")
+    parser.add_argument("--result_csv_path", default="evaluation_results.csv", type=str,
+                        help="Path to the CSV file to save evaluation results.")
 
     args = parser.parse_args()
     args.device = torch.device("cuda")
