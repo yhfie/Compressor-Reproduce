@@ -184,7 +184,7 @@ def evaluate(args, model, tokenizer, eval_when_training=False):
     # --- CSV Saving Logic ---
     csv_file_exists = os.path.exists(args.result_csv_path)
     with open(args.result_csv_path, 'a', newline='') as csvfile: # 'a' for append mode
-        fieldnames = ['name', 'compression_size_MB', 'acc', 'precision', 'recall', 'f1']
+        fieldnames = ['name', 'task', 'compression_size_MB', 'acc', 'precision', 'recall', 'f1']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         if not csv_file_exists:
