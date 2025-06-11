@@ -192,6 +192,7 @@ def evaluate(args, model, tokenizer, eval_when_training=False):
 
         writer.writerow({
             'name': "CodeBERT",
+            'task': "clone_detection",
             'compression_size_MB': "480 MB",
             'acc': round(result["eval_acc"], 4),
             'precision': round(result["eval_precision"], 4),
