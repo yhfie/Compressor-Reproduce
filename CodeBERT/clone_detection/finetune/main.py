@@ -191,7 +191,7 @@ def evaluate(args, model, tokenizer, eval_when_training=False):
             writer.writeheader() # Write header only if file didn't exist
 
         writer.writerow({
-            'name': args.model_name_for_csv,
+            'name': "CodeBERT",
             'compression_size_MB': "480 MB",
             'acc': round(result["eval_acc"], 4),
             'precision': round(result["eval_precision"], 4),
