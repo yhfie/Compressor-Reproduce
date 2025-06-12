@@ -211,6 +211,7 @@ def main():
 
             writer.writerow({
                 'name': args.model_name_for_csv,
+                'task': "clone detection",
                 'compression_size_MB': "7.5 MB",
                 'acc': round(eval_res["eval_acc"], 4),
                 'precision': round(eval_res["eval_precision"], 4),
